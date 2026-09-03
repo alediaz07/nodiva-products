@@ -9,7 +9,6 @@ import {
   Check,
   ChefHat,
   Mail,
-  MapPin,
   Menu,
   Phone,
   UtensilsCrossed,
@@ -77,10 +76,21 @@ const services = [
   },
 ];
 
+const coverageProvinces = [
+  { name: "San José", x: 596, y: 275.5 },
+  { name: "Alajuela", x: 554.5, y: 139.5 },
+  { name: "Heredia", x: 630.2, y: 171.1 },
+  { name: "Cartago", x: 682, y: 271.8 },
+  { name: "Limón", x: 765.7, y: 299 },
+  { name: "Puntarenas", x: 749.6, y: 401 },
+  { name: "Guanacaste", x: 412.8, y: 157.5 },
+];
+
 export default function Home() {
   const storyRef = useRef<HTMLElement>(null);
   const [storyProgress, setStoryProgress] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [activeProvince, setActiveProvince] = useState(0);
 
   useEffect(() => {
     let frame = 0;
@@ -118,6 +128,17 @@ export default function Home() {
       window.removeEventListener("keydown", closeWithEscape);
     };
   }, [menuOpen]);
+
+  useEffect(() => {
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    if (reducedMotion.matches) return;
+
+    const interval = window.setInterval(() => {
+      setActiveProvince((province) => (province + 1) % coverageProvinces.length);
+    }, 1500);
+
+    return () => window.clearInterval(interval);
+  }, []);
 
   const activeStep = Math.min(3, Math.floor(storyProgress * 4));
   const firstAngle = 1 - smoothstep(0.18, 0.3, storyProgress);
@@ -300,7 +321,18 @@ export default function Home() {
       </section>
 
       <section className="coverage" id="cobertura">
-        <div className="coverage-orbit" aria-hidden="true"><span className="orbit-one" /><span className="orbit-two" /><MapPin /></div>
+        <div className="coverage-orbit">
+          <svg className="coverage-map" viewBox="250 40 600 500" role="img" aria-label="Mapa de Costa Rica con cobertura en sus siete provincias">
+            <image href="/images/costa-rica-provincias.svg" x="0" y="0" width="1000" height="1000" preserveAspectRatio="xMidYMid meet" />
+            <path className="coverage-map-route" d={coverageProvinces.slice(0, activeProvince + 1).map(({ x, y }) => `${x},${y}`).join(" ")} />
+            <g className="coverage-pin" style={{ transform: `translate(${coverageProvinces[activeProvince].x}px, ${coverageProvinces[activeProvince].y}px)` }}>
+              <circle className="coverage-pin-pulse" r="16" />
+              <circle className="coverage-pin-dot" r="5" />
+              <path className="coverage-pin-mark" d="M0-27c-8 0-14 6-14 14 0 10 14 22 14 22S14-3 14-13C14-21 8-27 0-27Zm0 19a5 5 0 1 1 0-10 5 5 0 0 1 0 10Z" />
+            </g>
+          </svg>
+          <p className="coverage-province" aria-live="polite">{coverageProvinces[activeProvince].name}</p>
+        </div>
         <div className="coverage-copy">
           <p className="section-kicker">Cobertura nacional</p>
           <h2>En todo Costa Rica.<br /><em>Principalmente en el Valle Central.</em></h2>
