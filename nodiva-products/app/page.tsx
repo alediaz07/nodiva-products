@@ -17,6 +17,7 @@ import { useEffect, useRef, useState, type CSSProperties, type FormEvent, type M
 
 const phone = "+50683738588";
 const email = "nodivaproducts@gmail.com";
+const imagePath = (path: string) => `${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}${path}`;
 const whatsapp = `https://wa.me/${phone.replace(/\D/g, "")}`;
 const whatsappLink = (message: string) => `${whatsapp}?text=${encodeURIComponent(message)}`;
 const emailLink = (subject: string, body: string) =>
@@ -247,7 +248,7 @@ export default function Home() {
     <main>
       <header className="site-header">
         <a className="brand" href="#inicio" aria-label="NODIVA, volver al inicio" onClick={() => setMenuOpen(false)}>
-          <Image unoptimized src="/images/nodiva-logo.jpeg" alt="" width={64} height={64} className="brand-mark" priority />
+          <Image unoptimized src={imagePath("/images/nodiva-logo.jpeg")} alt="" width={64} height={64} className="brand-mark" priority />
           <span><strong>NODIVA</strong><small>PRODUCTS S.A.</small></span>
         </a>
 
@@ -268,7 +269,7 @@ export default function Home() {
       </header>
 
       <section className="hero" id="inicio">
-        <Image unoptimized src="/images/cocina-industrial.png" alt="Cocina industrial moderna equipada para servicios de alimentación" fill priority sizes="100vw" className="hero-image" />
+        <Image unoptimized src={imagePath("/images/cocina-industrial.png")} alt="Cocina industrial moderna equipada para servicios de alimentación" fill priority sizes="100vw" className="hero-image" />
         <div className="hero-shade" />
         <div className="hero-grid" />
 
@@ -305,10 +306,10 @@ export default function Home() {
       <section className="story" id="experiencia" ref={storyRef} style={storyStyle}>
         <div className="story-sticky">
             <div className="story-visual">
-              <Image unoptimized src="/images/cocina-industrial.png" alt="" fill sizes="100vw" className="story-angle story-angle-first" />
-              <Image unoptimized src="/images/cocina-frontal.png" alt="" fill sizes="100vw" className="story-angle story-angle-front" />
-              <Image unoptimized src="/images/cocina-lateral.png" alt="" fill sizes="100vw" className="story-angle story-angle-side" />
-              <Image unoptimized src="/images/cocina-industrial.png" alt="" fill sizes="100vw" className="story-angle story-angle-final" />
+              <Image unoptimized src={imagePath("/images/cocina-industrial.png")} alt="" fill sizes="100vw" className="story-angle story-angle-first" />
+              <Image unoptimized src={imagePath("/images/cocina-frontal.png")} alt="" fill sizes="100vw" className="story-angle story-angle-front" />
+              <Image unoptimized src={imagePath("/images/cocina-lateral.png")} alt="" fill sizes="100vw" className="story-angle story-angle-side" />
+              <Image unoptimized src={imagePath("/images/cocina-industrial.png")} alt="" fill sizes="100vw" className="story-angle story-angle-final" />
               <div className="story-vignette" />
               <div className="scan-line" />
             </div>
@@ -348,7 +349,7 @@ export default function Home() {
 
       <section className="feature feature-cafeteria education-experience">
         <div className="feature-media">
-          <Image unoptimized src="/images/comedor-estudiantil.png" alt="Servicio profesional de comedor estudiantil" fill sizes="(max-width: 900px) 100vw, 60vw" />
+          <Image unoptimized src={imagePath("/images/comedor-estudiantil.png")} alt="Servicio profesional de comedor estudiantil" fill sizes="(max-width: 900px) 100vw, 60vw" />
         </div>
         <div className="feature-content education-content">
           <p className="section-kicker">EXPERIENCIA EN CENTROS EDUCATIVOS</p>
@@ -391,7 +392,7 @@ export default function Home() {
           </button>
         </div>
         <div className="feature-media">
-          <Image unoptimized src="/images/catering.png" alt="Servicio de catering para empresas y eventos" fill sizes="(max-width: 900px) 100vw, 60vw" />
+          <Image unoptimized src={imagePath("/images/catering.png")} alt="Servicio de catering para empresas y eventos" fill sizes="(max-width: 900px) 100vw, 60vw" />
         </div>
       </section>
 
@@ -405,14 +406,14 @@ export default function Home() {
           </p>
         </div>
         <div className="menus-image">
-          <Image unoptimized src="/images/menu-mensual.png" alt="Selección de comidas institucionales costarricenses" fill sizes="100vw" />
+          <Image unoptimized src={imagePath("/images/menu-mensual.png")} alt="Selección de comidas institucionales costarricenses" fill sizes="100vw" />
         </div>
       </section>
 
       <section className="coverage" id="cobertura">
         <div className="coverage-orbit">
           <svg className="coverage-map" viewBox="250 40 600 500" role="img" aria-label="Mapa de Costa Rica con cobertura en sus siete provincias">
-            <image href="/images/costa-rica-provincias.svg" x="0" y="0" width="1000" height="1000" preserveAspectRatio="xMidYMid meet" />
+            <image href={imagePath("/images/costa-rica-provincias.svg")} x="0" y="0" width="1000" height="1000" preserveAspectRatio="xMidYMid meet" />
             <path className="coverage-map-route" d={coverageProvinces.slice(0, activeProvince + 1).map(({ x, y }) => `${x},${y}`).join(" ")} />
             <g className="coverage-pin" style={{ transform: `translate(${coverageProvinces[activeProvince].x}px, ${coverageProvinces[activeProvince].y}px)` }}>
               <circle className="coverage-pin-pulse" r="16" />
@@ -454,7 +455,7 @@ export default function Home() {
       <footer>
         <div className="footer-identity">
           <div className="footer-brand">
-            <Image unoptimized src="/images/nodiva-logo.jpeg" alt="NODIVA Products S.A." width={72} height={72} />
+            <Image unoptimized src={imagePath("/images/nodiva-logo.jpeg")} alt="NODIVA Products S.A." width={72} height={72} />
             <div><strong>NODIVA</strong><span>PRODUCTS S.A.</span></div>
           </div>
           <p>Soluciones de alimentación para centros educativos, instituciones, empresas y eventos en Costa Rica.</p>
