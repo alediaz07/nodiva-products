@@ -54,21 +54,39 @@ const storySteps = [
 const services = [
   {
     number: "01",
+    category: "CENTROS EDUCATIVOS",
     icon: Building2,
     title: "Comedores estudiantiles",
-    text: "Gestión integral para escuelas y colegios mediante procesos de contratación y licitación con el MEP.",
+    text: "Gestión integral del servicio de alimentación para escuelas y colegios, adaptada a los requerimientos de cada centro y proceso de contratación.",
+    service: "Comedor estudiantil",
+    action: "Consultar comedores",
   },
   {
     number: "02",
     icon: UtensilsCrossed,
-    title: "Sodas institucionales",
-    text: "Experiencia en la administración de sodas y participación en licitaciones según las condiciones de cada institución.",
+    category: "EMPRESAS E INSTITUCIONES",
+    title: "Alimentación empresarial",
+    text: "Servicios de alimentación recurrente adaptados a la cantidad de personas, horarios y dinámica operativa de cada organización.",
+    service: "Alimentación empresarial",
+    action: "Consultar alimentación empresarial",
   },
   {
     number: "03",
     icon: CalendarDays,
-    title: "Catering",
-    text: "Buffet, comidas empacadas, alimentación empresarial y servicios para actividades institucionales o particulares.",
+    category: "EVENTOS Y ACTIVIDADES",
+    title: "Catering y eventos",
+    text: "Buffet, comidas empacadas y soluciones de alimentación para eventos empresariales, institucionales y particulares.",
+    service: "Catering y eventos",
+    action: "Consultar catering",
+  },
+  {
+    number: "04",
+    category: "CONTRATACIÓN INSTITUCIONAL",
+    icon: Building2,
+    title: "Sodas institucionales",
+    text: "Propuestas para la administración y operación de sodas mediante procesos de contratación, según las condiciones de cada institución.",
+    service: "Soda institucional",
+    action: "Consultar sodas",
   },
 ];
 
@@ -186,8 +204,12 @@ export default function Home() {
     return () => window.clearInterval(interval);
   }, []);
 
-  const openProposal = (event: MouseEvent<HTMLButtonElement>) => {
+  const openProposal = (event: MouseEvent<HTMLButtonElement>, service?: string) => {
     proposalTriggerRef.current = event.currentTarget;
+    if (service) {
+      setProposal((current) => ({ ...current, service }));
+      setProposalErrors((current) => ({ ...current, service: undefined }));
+    }
     setProposalOpen(true);
   };
   const updateProposal = (field: keyof ProposalForm, value: string) => {
@@ -331,11 +353,11 @@ export default function Home() {
         </div>
 
         <div className="service-grid">
-          {services.map(({ number, icon: Icon, title, text }) => (
+          {services.map(({ number, category, icon: Icon, title, text, service, action }) => (
             <article className="service-card" key={title}>
               <div className="service-card-top"><span>{number}</span><Icon size={26} strokeWidth={1.5} /></div>
-              <div><h3>{title}</h3><p>{text}</p></div>
-              <button className="service-card-action" type="button" onClick={openProposal}>Consultar servicio <ArrowRight size={17} /></button>
+              <div className="service-card-body"><p className="service-card-category">{category}</p><h3>{title}</h3><p>{text}</p></div>
+              <button className="service-card-action" type="button" onClick={(event) => openProposal(event, service)}>{action} <ArrowRight size={17} /></button>
             </article>
           ))}
         </div>
@@ -364,7 +386,7 @@ export default function Home() {
             <article><strong>GESTIÓN COMPLETA</strong><span>Desde la coordinación hasta el plato servido.</span></article>
             <article><strong>LICITACIONES DEL MEP</strong><span>Participación en procesos de contratación institucional.</span></article>
           </div>
-          <button className="button button-dark education-button" type="button" onClick={openProposal}>
+          <button className="button button-dark education-button" type="button" onClick={(event) => openProposal(event, "Comedor estudiantil")}>
             Consultar servicio para mi institución <ArrowRight size={18} />
           </button>
         </div>
@@ -381,7 +403,7 @@ export default function Home() {
           <div className="service-tags" aria-label="Modalidades de catering">
             <span>Empresarial</span><span>Eventos</span><span>Buffet</span><span>Comida empacada</span>
           </div>
-          <button className="button button-dark" type="button" onClick={openProposal}>
+          <button className="button button-dark" type="button" onClick={(event) => openProposal(event, "Catering y eventos")}>
             Cotizar catering <ArrowRight size={18} />
           </button>
         </div>
