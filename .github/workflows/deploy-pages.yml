@@ -38,11 +38,17 @@ jobs:
 
       - name: Build static site
         working-directory: ./nodiva-products
-        run: npm run build
+        run: |
+          rm -rf out
+          npx next build
 
-      - name: Prepare Pages output
+      - name: Verify Pages output
         working-directory: ./nodiva-products
-        run: rm -rf out && cp -R dist out
+        run: test -f out/index.html
+
+      - name: Create nojekyll marker
+        working-directory: ./nodiva-products
+        run: touch out/.nojekyll
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
