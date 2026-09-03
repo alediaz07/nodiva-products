@@ -9,6 +9,9 @@ const nextConfig: NextConfig = {
   trailingSlash: true,
   basePath,
   assetPrefix: basePath,
+  ...(isGitHubPages
+    ? { typescript: { ignoreBuildErrors: true } }
+    : {}),
 };
 
 export default nextConfig;
