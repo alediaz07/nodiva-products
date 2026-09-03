@@ -13,7 +13,7 @@ import {
   UtensilsCrossed,
   X,
 } from "lucide-react";
-import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useRef, useState, type CSSProperties, type FormEvent, type MouseEvent } from "react";
 
 const phone = "+50683738588";
 const email = "nodivaproducts@gmail.com";
@@ -57,23 +57,45 @@ const services = [
     icon: Building2,
     title: "Comedores estudiantiles",
     text: "Gestión integral para escuelas y colegios mediante procesos de contratación y licitación con el MEP.",
-    href: whatsappLink("Hola NODIVA, deseo información sobre la gestión de comedores estudiantiles."),
   },
   {
     number: "02",
     icon: UtensilsCrossed,
     title: "Sodas institucionales",
     text: "Experiencia en la administración de sodas y participación en licitaciones según las condiciones de cada institución.",
-    href: whatsappLink("Hola NODIVA, deseo información sobre el servicio para sodas institucionales."),
   },
   {
     number: "03",
     icon: CalendarDays,
     title: "Catering",
     text: "Buffet, comidas empacadas, alimentación empresarial y servicios para actividades institucionales o particulares.",
-    href: whatsappLink("Hola NODIVA, deseo cotizar un servicio de catering."),
   },
 ];
+
+type ProposalForm = {
+  institution: string;
+  contact: string;
+  organization: string;
+  service: string;
+  province: string;
+  location: string;
+  people: string;
+  frequency: string;
+  startDate: string;
+  phone: string;
+  email: string;
+  details: string;
+};
+
+const emptyProposal: ProposalForm = {
+  institution: "", contact: "", organization: "", service: "", province: "", location: "", people: "",
+  frequency: "", startDate: "", phone: "", email: "", details: "",
+};
+
+const organizationOptions = ["Escuela", "Colegio", "Institución pública", "Empresa privada", "Organización o asociación", "Evento particular", "Otro"];
+const serviceOptions = ["Comedor estudiantil", "Alimentación empresarial", "Catering y eventos", "Soda institucional", "Otro servicio de alimentación"];
+const provinceOptions = ["San José", "Alajuela", "Cartago", "Heredia", "Guanacaste", "Puntarenas", "Limón"];
+const frequencyOptions = ["Servicio diario", "Varios días por semana", "Servicio semanal", "Evento de un día", "Evento de varios días", "Por definir"];
 
 const coverageProvinces = [
   { name: "San José", x: 596, y: 275.5 },
@@ -90,6 +112,16 @@ export default function Home() {
   const [storyProgress, setStoryProgress] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeProvince, setActiveProvince] = useState(0);
+  const [proposalOpen, setProposalOpen] = useState(false);
+  const [proposal, setProposal] = useState<ProposalForm>(emptyProposal);
+  const [proposalErrors, setProposalErrors] = useState<Partial<Record<keyof ProposalForm, string>>>({});
+  const proposalTriggerRef = useRef<HTMLButtonElement | null>(null);
+  const proposalDialogRef = useRef<HTMLDivElement>(null);
+
+  const closeProposal = () => {
+    setProposalOpen(false);
+    window.setTimeout(() => proposalTriggerRef.current?.focus(), 0);
+  };
 
   useEffect(() => {
     let frame = 0;
@@ -129,6 +161,21 @@ export default function Home() {
   }, [menuOpen]);
 
   useEffect(() => {
+    if (!proposalOpen) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    proposalDialogRef.current?.focus();
+    const closeWithEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") closeProposal();
+    };
+    window.addEventListener("keydown", closeWithEscape);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", closeWithEscape);
+    };
+  }, [proposalOpen]);
+
+  useEffect(() => {
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
     if (reducedMotion.matches) return;
 
@@ -138,6 +185,37 @@ export default function Home() {
 
     return () => window.clearInterval(interval);
   }, []);
+
+  const openProposal = (event: MouseEvent<HTMLButtonElement>) => {
+    proposalTriggerRef.current = event.currentTarget;
+    setProposalOpen(true);
+  };
+  const updateProposal = (field: keyof ProposalForm, value: string) => {
+    setProposal((current) => ({ ...current, [field]: value }));
+    setProposalErrors((current) => ({ ...current, [field]: undefined }));
+  };
+  const validateProposal = () => {
+    const errors: Partial<Record<keyof ProposalForm, string>> = {};
+    const required: Array<keyof ProposalForm> = ["institution", "contact", "organization", "service", "province", "location", "people", "frequency", "phone"];
+    required.forEach((field) => {
+      if (!proposal[field].trim()) errors[field] = "Este campo es obligatorio.";
+    });
+    if (proposal.people && (!/^\d+$/.test(proposal.people) || Number(proposal.people) <= 0)) errors.people = "Ingrese una cantidad positiva.";
+    if (proposal.phone && !/^\+?506\s?\d{4}[\s-]?\d{4}$/.test(proposal.phone.trim())) errors.phone = "Ingrese un teléfono válido con números y prefijo +506.";
+    if (proposal.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(proposal.email.trim())) errors.email = "Ingrese un correo electrónico válido.";
+    setProposalErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+  const proposalMessage = () => `SOLICITUD DE PROPUESTA — NODIVA PRODUCTS S.A.\n\nInstitución o empresa: ${proposal.institution}\nPersona de contacto: ${proposal.contact}\nTipo de organización: ${proposal.organization}\nServicio requerido: ${proposal.service}\nProvincia: ${proposal.province}\nCantón o ubicación: ${proposal.location}\nCantidad aproximada: ${proposal.people}\nFrecuencia: ${proposal.frequency}\nFecha estimada: ${proposal.startDate || "No indicada"}\nTeléfono: ${proposal.phone}\nCorreo: ${proposal.email || "No indicado"}\nDetalles adicionales: ${proposal.details || "No indicados"}\n\nSolicitud dirigida a Norman Díaz.`;
+  const submitProposal = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!validateProposal()) return;
+    window.open(whatsappLink(proposalMessage()), "_blank", "noopener,noreferrer");
+  };
+  const emailProposal = () => {
+    if (!validateProposal()) return;
+    window.location.href = emailLink("Solicitud de propuesta institucional", proposalMessage());
+  };
 
   const activeStep = Math.min(3, Math.floor(storyProgress * 4));
   const firstAngle = 1 - smoothstep(0.18, 0.3, storyProgress);
@@ -173,9 +251,9 @@ export default function Home() {
           <a href="#servicios" onClick={() => setMenuOpen(false)}>Servicios</a>
           <a href="#experiencia" onClick={() => setMenuOpen(false)}>Cómo trabajamos</a>
           <a href="#cobertura" onClick={() => setMenuOpen(false)}>Cobertura</a>
-          <a className="nav-cta" href={whatsappLink("Hola NODIVA, deseo solicitar una cotización.")} target="_blank" rel="noreferrer" onClick={() => setMenuOpen(false)}>
+          <button className="nav-cta" type="button" onClick={(event) => { setMenuOpen(false); openProposal(event); }}>
             Cotizar <ArrowRight size={16} />
-          </a>
+          </button>
         </nav>
 
         <button className="menu-button" type="button" aria-label={menuOpen ? "Cerrar menú" : "Abrir menú"} aria-expanded={menuOpen} onClick={() => setMenuOpen((open) => !open)}>
@@ -196,9 +274,9 @@ export default function Home() {
             empresas y centros educativos en Costa Rica.
           </p>
           <div className="hero-actions">
-            <a className="button button-primary" href={whatsappLink("Hola NODIVA, deseo solicitar una propuesta de servicio.")} target="_blank" rel="noreferrer">
+            <button className="button button-primary" type="button" onClick={openProposal}>
               Solicitar propuesta <ArrowRight size={18} />
-            </a>
+            </button>
             <a className="button button-ghost" href="#experiencia">Conocer la operación</a>
           </div>
         </div>
@@ -253,11 +331,11 @@ export default function Home() {
         </div>
 
         <div className="service-grid">
-          {services.map(({ number, icon: Icon, title, text, href }) => (
+          {services.map(({ number, icon: Icon, title, text }) => (
             <article className="service-card" key={title}>
               <div className="service-card-top"><span>{number}</span><Icon size={26} strokeWidth={1.5} /></div>
               <div><h3>{title}</h3><p>{text}</p></div>
-              <a href={href} target="_blank" rel="noreferrer">Consultar servicio <ArrowRight size={17} /></a>
+              <button className="service-card-action" type="button" onClick={openProposal}>Consultar servicio <ArrowRight size={17} /></button>
             </article>
           ))}
         </div>
@@ -286,9 +364,9 @@ export default function Home() {
             <article><strong>GESTIÓN COMPLETA</strong><span>Desde la coordinación hasta el plato servido.</span></article>
             <article><strong>LICITACIONES DEL MEP</strong><span>Participación en procesos de contratación institucional.</span></article>
           </div>
-          <a className="button button-dark education-button" href={whatsappLink("Hola NODIVA, deseo conversar sobre un servicio para un centro educativo.")} target="_blank" rel="noreferrer">
+          <button className="button button-dark education-button" type="button" onClick={openProposal}>
             Consultar servicio para mi institución <ArrowRight size={18} />
-          </a>
+          </button>
         </div>
       </section>
 
@@ -303,9 +381,9 @@ export default function Home() {
           <div className="service-tags" aria-label="Modalidades de catering">
             <span>Empresarial</span><span>Eventos</span><span>Buffet</span><span>Comida empacada</span>
           </div>
-          <a className="button button-dark" href={whatsappLink("Hola NODIVA, deseo cotizar un servicio de catering.")} target="_blank" rel="noreferrer">
+          <button className="button button-dark" type="button" onClick={openProposal}>
             Cotizar catering <ArrowRight size={18} />
-          </a>
+          </button>
         </div>
         <div className="feature-media">
           <Image unoptimized src="/images/catering.png" alt="Servicio de catering para empresas y eventos" fill sizes="(max-width: 900px) 100vw, 60vw" />
@@ -357,9 +435,9 @@ export default function Home() {
         <h2>¿Qué necesita servir?</h2>
         <p>Cuéntenos sus requerimientos y preparemos una propuesta personalizada.</p>
         <div className="hero-actions">
-          <a className="button button-light" href={whatsappLink("Hola Norman, deseo solicitar una propuesta con NODIVA.")} target="_blank" rel="noreferrer">
+          <button className="button button-light" type="button" onClick={openProposal}>
             Escribir por WhatsApp <ArrowRight size={18} />
-          </a>
+          </button>
           <a className="button button-outline-light" href={emailLink("Solicitud de propuesta — NODIVA", "Hola Norman,\n\nDeseo solicitar información y una propuesta para el siguiente servicio:\n\n")}>Enviar correo</a>
         </div>
       </section>
@@ -376,9 +454,43 @@ export default function Home() {
         <div className="footer-meta"><span>Atención 24/7</span><span>Cotizaciones: Norman Díaz</span></div>
       </footer>
 
-      <a className="floating-whatsapp" href={whatsappLink("Hola NODIVA, deseo información sobre sus servicios.")} target="_blank" rel="noreferrer" aria-label="Contactar a NODIVA por WhatsApp">
+      <button className="floating-whatsapp" type="button" onClick={openProposal} aria-label="Contactar a NODIVA por WhatsApp">
         <ChefHat size={20} /><span>Cotizar</span>
-      </a>
+      </button>
+
+      {proposalOpen && (
+        <div className="proposal-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) closeProposal(); }}>
+          <div className="proposal-modal" role="dialog" aria-modal="true" aria-labelledby="proposal-title" tabIndex={-1} ref={proposalDialogRef}>
+            <div className="proposal-modal-header">
+              <div>
+                <p className="section-kicker">Solicitud de propuesta</p>
+                <h2 id="proposal-title">Solicite una propuesta adaptada a su operación.</h2>
+                <p>Comparta los datos principales de su institución, empresa o evento. Norman Díaz recibirá la solicitud y se comunicará con usted para ampliar la información.</p>
+              </div>
+              <button className="proposal-close" type="button" onClick={closeProposal} aria-label="Cerrar formulario">&times;</button>
+            </div>
+            <form className="proposal-form" onSubmit={submitProposal} noValidate>
+              <label>Nombre de la institución o empresa *<input value={proposal.institution} onChange={(event) => updateProposal("institution", event.target.value)} aria-invalid={Boolean(proposalErrors.institution)} />{proposalErrors.institution && <small>{proposalErrors.institution}</small>}</label>
+              <label>Nombre de la persona de contacto *<input value={proposal.contact} onChange={(event) => updateProposal("contact", event.target.value)} aria-invalid={Boolean(proposalErrors.contact)} />{proposalErrors.contact && <small>{proposalErrors.contact}</small>}</label>
+              <label>Tipo de organización *<select value={proposal.organization} onChange={(event) => updateProposal("organization", event.target.value)} aria-invalid={Boolean(proposalErrors.organization)}><option value="">Seleccione una opción</option>{organizationOptions.map((option) => <option key={option}>{option}</option>)}</select>{proposalErrors.organization && <small>{proposalErrors.organization}</small>}</label>
+              <label>Servicio requerido *<select value={proposal.service} onChange={(event) => updateProposal("service", event.target.value)} aria-invalid={Boolean(proposalErrors.service)}><option value="">Seleccione una opción</option>{serviceOptions.map((option) => <option key={option}>{option}</option>)}</select>{proposalErrors.service && <small>{proposalErrors.service}</small>}</label>
+              <label>Provincia *<select value={proposal.province} onChange={(event) => updateProposal("province", event.target.value)} aria-invalid={Boolean(proposalErrors.province)}><option value="">Seleccione una opción</option>{provinceOptions.map((option) => <option key={option}>{option}</option>)}</select>{proposalErrors.province && <small>{proposalErrors.province}</small>}</label>
+              <label>Cantón o ubicación aproximada *<input value={proposal.location} onChange={(event) => updateProposal("location", event.target.value)} aria-invalid={Boolean(proposalErrors.location)} />{proposalErrors.location && <small>{proposalErrors.location}</small>}</label>
+              <label>Cantidad aproximada de personas *<input type="number" min="1" step="1" value={proposal.people} onChange={(event) => updateProposal("people", event.target.value)} aria-invalid={Boolean(proposalErrors.people)} />{proposalErrors.people && <small>{proposalErrors.people}</small>}</label>
+              <label>Frecuencia del servicio *<select value={proposal.frequency} onChange={(event) => updateProposal("frequency", event.target.value)} aria-invalid={Boolean(proposalErrors.frequency)}><option value="">Seleccione una opción</option>{frequencyOptions.map((option) => <option key={option}>{option}</option>)}</select>{proposalErrors.frequency && <small>{proposalErrors.frequency}</small>}</label>
+              <label>Fecha estimada de inicio<input type="date" value={proposal.startDate} onChange={(event) => updateProposal("startDate", event.target.value)} /></label>
+              <label>Teléfono de contacto *<input type="tel" inputMode="tel" placeholder="+506 0000 0000" value={proposal.phone} onChange={(event) => updateProposal("phone", event.target.value)} aria-invalid={Boolean(proposalErrors.phone)} />{proposalErrors.phone && <small>{proposalErrors.phone}</small>}</label>
+              <label>Correo electrónico<input type="email" value={proposal.email} onChange={(event) => updateProposal("email", event.target.value)} aria-invalid={Boolean(proposalErrors.email)} />{proposalErrors.email && <small>{proposalErrors.email}</small>}</label>
+              <label className="proposal-details">Detalles adicionales<textarea placeholder="Horarios, tipo de alimentación, instalaciones disponibles o cualquier requerimiento particular." value={proposal.details} onChange={(event) => updateProposal("details", event.target.value)} /></label>
+              <p className="proposal-privacy">La información proporcionada será utilizada únicamente para atender su solicitud comercial.</p>
+              <div className="proposal-actions">
+                <button className="button button-primary" type="submit">Enviar solicitud por WhatsApp <ArrowRight size={18} /></button>
+                <button className="button proposal-email" type="button" onClick={emailProposal}>Prefiero enviar un correo</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </main>
   );
 }

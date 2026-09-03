@@ -96,7 +96,7 @@ a:focus-visible, button:focus-visible { outline: 3px solid white; outline-offset
 .nav-links > a:hover::after { right: 0; }
 .nav-cta {
   height: 42px; padding: 0 18px; display: inline-flex; align-items: center; gap: 10px;
-  border: 1px solid rgba(255,255,255,.55); border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.55); border-radius: 999px; background: transparent; color: white; cursor: pointer;
   transition: background .25s ease, color .25s ease;
 }
 .nav-cta:hover { background: white; color: var(--ink); }
@@ -236,6 +236,7 @@ a:focus-visible, button:focus-visible { outline: 3px solid white; outline-offset
 .service-card p { margin: 0; line-height: 1.65; color: #626267; transition: color .3s ease; }
 .service-card:hover p { color: rgba(255,255,255,.76); }
 .service-card a { display: inline-flex; align-items: center; gap: 10px; font-size: .82rem; font-weight: 700; }
+.service-card-action { display: inline-flex; align-items: center; gap: 10px; padding: 0; border: 0; background: transparent; color: inherit; font-size: .82rem; font-weight: 700; cursor: pointer; text-align: left; }
 
 .feature { min-height: 760px; display: grid; grid-template-columns: 1.08fr .92fr; background: white; }
 .feature-catering { grid-template-columns: .92fr 1.08fr; background: #ecebe7; }
@@ -316,7 +317,30 @@ footer { padding: 44px clamp(20px, 5vw, 80px); display: grid; grid-template-colu
 .footer-contact, .footer-meta { display: flex; flex-direction: column; gap: 10px; font-size: .75rem; color: rgba(255,255,255,.62); }
 .footer-contact a { display: flex; align-items: center; gap: 9px; }
 .floating-whatsapp { position: fixed; right: 20px; bottom: 20px; z-index: 40; min-height: 48px; padding: 0 18px; border-radius: 999px; display: flex; align-items: center; gap: 9px; background: white; color: var(--ink); box-shadow: 0 14px 45px rgba(0,0,0,.24); font-size: .78rem; font-weight: 800; }
+.floating-whatsapp { border: 0; cursor: pointer; }
 .floating-whatsapp::before { content: ""; width: 8px; height: 8px; background: #27c66f; border-radius: 50%; }
+
+.proposal-backdrop { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; padding: 24px; background: rgba(0,0,0,.72); backdrop-filter: blur(5px); }
+.proposal-modal { width: min(760px, 100%); max-height: min(900px, calc(100svh - 48px)); overflow-y: auto; padding: clamp(28px, 5vw, 52px); background: #111113; color: white; box-shadow: 0 24px 80px rgba(0,0,0,.42); outline: none; }
+.proposal-modal-header { display: flex; justify-content: space-between; gap: 24px; }
+.proposal-modal-header .section-kicker { margin-bottom: 18px; color: var(--red); }
+.proposal-modal h2 { margin: 0; max-width: 650px; font-size: clamp(2rem, 4vw, 3.5rem); line-height: 1.05; letter-spacing: .015em; }
+.proposal-modal-header p:last-child { max-width: 620px; margin: 22px 0 0; color: rgba(255,255,255,.68); line-height: 1.6; }
+.proposal-close { flex: 0 0 auto; width: 44px; height: 44px; border: 1px solid rgba(255,255,255,.28); background: transparent; color: white; font-size: 1.8rem; line-height: 1; cursor: pointer; }
+.proposal-form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 22px; margin-top: 34px; }
+.proposal-form label { min-width: 0; display: flex; flex-direction: column; gap: 8px; color: rgba(255,255,255,.88); font-size: .78rem; font-weight: 700; line-height: 1.3; }
+.proposal-form input, .proposal-form select, .proposal-form textarea { width: 100%; min-height: 46px; border: 1px solid rgba(255,255,255,.26); border-radius: 2px; padding: 11px 12px; background: #1b1b1e; color: white; font: inherit; font-weight: 400; outline: none; }
+.proposal-form input:focus, .proposal-form select:focus, .proposal-form textarea:focus { border-color: var(--red); box-shadow: 0 0 0 2px rgba(224,0,18,.22); }
+.proposal-form input[aria-invalid="true"], .proposal-form select[aria-invalid="true"] { border-color: #ff7180; }
+.proposal-form textarea { min-height: 110px; resize: vertical; }
+.proposal-form input::placeholder, .proposal-form textarea::placeholder { color: rgba(255,255,255,.48); }
+.proposal-form option { background: #1b1b1e; }
+.proposal-form small { color: #ff9da7; font-size: .72rem; font-weight: 400; }
+.proposal-details, .proposal-privacy, .proposal-actions { grid-column: 1 / -1; }
+.proposal-privacy { margin: 6px 0 0; color: #a7aaad; font-size: .78rem; line-height: 1.5; }
+.proposal-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 2px; }
+.proposal-actions .button { min-height: 50px; }
+.proposal-email { border: 1px solid rgba(255,255,255,.34); background: transparent; color: white; cursor: pointer; }
 
 @keyframes heroReveal { from { opacity: 0; transform: scale(1.08); } to { opacity: 1; transform: scale(1); } }
 @keyframes nudge { 0%,100% { transform: translateY(0); } 50% { transform: translateY(7px); } }
@@ -389,6 +413,13 @@ footer { padding: 44px clamp(20px, 5vw, 80px); display: grid; grid-template-colu
   .floating-whatsapp span { display: none; }
   .floating-whatsapp { width: 50px; padding: 0; justify-content: center; right: 16px; bottom: 28px; }
   .floating-whatsapp::before { display: none; }
+  .proposal-backdrop { padding: 0; place-items: stretch; }
+  .proposal-modal { max-height: 100svh; padding: 24px 20px 32px; }
+  .proposal-modal-header { gap: 14px; }
+  .proposal-form { grid-template-columns: 1fr; gap: 16px; margin-top: 28px; }
+  .proposal-details, .proposal-privacy, .proposal-actions { grid-column: auto; }
+  .proposal-actions { flex-direction: column; }
+  .proposal-actions .button { width: 100%; }
 }
 
 @media (prefers-reduced-motion: reduce) {
