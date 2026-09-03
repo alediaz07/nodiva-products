@@ -29,26 +29,10 @@ const smoothstep = (start: number, end: number, value: number) => {
 };
 
 const storySteps = [
-  {
-    eyebrow: "01 · Planificación",
-    title: "Cada servicio comienza entendiendo la operación.",
-    text: "Menús, horarios, capacidad y dinámica de atención se organizan según los requerimientos reales de cada cliente.",
-  },
-  {
-    eyebrow: "02 · Preparación",
-    title: "Una cocina preparada para responder.",
-    text: "Coordinamos la elaboración de alimentos con procesos claros, espacios funcionales y una operación que se adapta a cada escala.",
-  },
-  {
-    eyebrow: "03 · Distribución",
-    title: "Del área de producción al punto de servicio.",
-    text: "Gestionamos el flujo completo para que cada preparación llegue donde debe, en el momento indicado.",
-  },
-  {
-    eyebrow: "04 · Plato servido",
-    title: "La operación termina cuando el servicio está completo.",
-    text: "Integramos gestión, elaboración y distribución en una sola solución alimentaria.",
-  },
+  { eyebrow: "01 · Planificación", title: "Cada servicio comienza entendiendo la operación.", text: "Menús, horarios, capacidad y dinámica de atención se organizan según los requerimientos reales de cada cliente." },
+  { eyebrow: "02 · Preparación", title: "Una cocina preparada para responder.", text: "Coordinamos la elaboración de alimentos con procesos claros, espacios funcionales y una operación que se adapta a cada escala." },
+  { eyebrow: "03 · Distribución", title: "Del área de producción al punto de servicio.", text: "Gestionamos el flujo completo para que cada preparación llegue donde debe, en el momento indicado." },
+  { eyebrow: "04 · Plato servido", title: "La operación termina cuando el servicio está completo.", text: "Integramos gestión, elaboración y distribución en una sola solución alimentaria." },
 ];
 
 const services = [
@@ -320,26 +304,25 @@ export default function Home() {
 
       <section className="story" id="experiencia" ref={storyRef} style={storyStyle}>
         <div className="story-sticky">
-          <div className="story-visual">
-            <Image unoptimized src="/images/cocina-industrial.png" alt="" fill sizes="100vw" className="story-angle story-angle-first" />
-            <Image unoptimized src="/images/cocina-frontal.png" alt="" fill sizes="100vw" className="story-angle story-angle-front" />
-            <Image unoptimized src="/images/cocina-lateral.png" alt="" fill sizes="100vw" className="story-angle story-angle-side" />
-            <Image unoptimized src="/images/cocina-industrial.png" alt="" fill sizes="100vw" className="story-angle story-angle-final" />
-            <div className="story-vignette" />
-            <div className="scan-line" />
-          </div>
-
-          <div className="story-counter"><span>0{activeStep + 1}</span><i /><span>04</span></div>
-          <div className="story-copy">
-            {storySteps.map((step, index) => (
-              <article key={step.eyebrow} className={index === activeStep ? "story-step is-active" : "story-step"} aria-hidden={index !== activeStep}>
-                <p className="eyebrow"><span /> {step.eyebrow}</p>
-                <h2>{step.title}</h2>
-                <p>{step.text}</p>
-              </article>
-            ))}
-          </div>
-          <div className="story-progress" aria-hidden="true"><span /></div>
+            <div className="story-visual">
+              <Image unoptimized src="/images/cocina-industrial.png" alt="" fill sizes="100vw" className="story-angle story-angle-first" />
+              <Image unoptimized src="/images/cocina-frontal.png" alt="" fill sizes="100vw" className="story-angle story-angle-front" />
+              <Image unoptimized src="/images/cocina-lateral.png" alt="" fill sizes="100vw" className="story-angle story-angle-side" />
+              <Image unoptimized src="/images/cocina-industrial.png" alt="" fill sizes="100vw" className="story-angle story-angle-final" />
+              <div className="story-vignette" />
+              <div className="scan-line" />
+            </div>
+            <div className="story-counter"><span>0{activeStep + 1}</span><i /><span>04</span></div>
+            <div className="story-copy">
+              {storySteps.map((step, index) => (
+                <article key={step.eyebrow} className={index === activeStep ? "story-step is-active" : "story-step"} aria-hidden={index !== activeStep}>
+                  <p className="eyebrow"><span /> {step.eyebrow}</p>
+                  <h2>{step.title}</h2>
+                  <p>{step.text}</p>
+                </article>
+              ))}
+            </div>
+            <div className="story-progress" aria-hidden="true"><span /></div>
         </div>
       </section>
 
@@ -452,28 +435,45 @@ export default function Home() {
       </section>
 
       <section className="final-cta">
-        <div className="final-cta-mark" aria-hidden="true">N</div>
-        <p className="section-kicker">Hablemos de su operación</p>
-        <h2>¿Qué necesita servir?</h2>
-        <p>Cuéntenos sus requerimientos y preparemos una propuesta personalizada.</p>
-        <div className="hero-actions">
+        <p className="section-kicker">HABLEMOS DE SU OPERACIÓN</p>
+        <h2>Diseñemos su servicio de alimentación.</h2>
+        <p>Cuéntenos las necesidades de su institución, empresa o evento. Prepararemos una propuesta adaptada a su ubicación, capacidad, horario y tipo de servicio.</p>
+        <div className="hero-actions final-cta-actions">
           <button className="button button-light" type="button" onClick={openProposal}>
-            Escribir por WhatsApp <ArrowRight size={18} />
+            Solicitar propuesta <ArrowRight size={18} />
           </button>
-          <a className="button button-outline-light" href={emailLink("Solicitud de propuesta — NODIVA", "Hola Norman,\n\nDeseo solicitar información y una propuesta para el siguiente servicio:\n\n")}>Enviar correo</a>
+          <a className="button button-outline-light" href={whatsappLink("Hola, deseo recibir información sobre los servicios de alimentación de NODIVA PRODUCTS S.A.")} target="_blank" rel="noreferrer">Escribir por WhatsApp</a>
+        </div>
+        <div className="final-contact-grid">
+          <div><span>ATENCIÓN DE PROPUESTAS</span><strong>Norman Díaz</strong></div>
+          <div><span>TELÉFONO Y WHATSAPP</span><a href={`tel:${phone}`}>+506 8373 8588</a></div>
+          <div><span>CORREO</span><a href={emailLink("Consulta desde el sitio web — NODIVA", "Hola Norman,\n\nDeseo realizar la siguiente consulta:\n\n")}>{email}</a></div>
         </div>
       </section>
 
       <footer>
-        <div className="footer-brand">
-          <Image unoptimized src="/images/nodiva-logo.jpeg" alt="NODIVA Products S.A." width={72} height={72} />
-          <div><strong>NODIVA</strong><span>PRODUCTS S.A.</span></div>
+        <div className="footer-identity">
+          <div className="footer-brand">
+            <Image unoptimized src="/images/nodiva-logo.jpeg" alt="NODIVA Products S.A." width={72} height={72} />
+            <div><strong>NODIVA</strong><span>PRODUCTS S.A.</span></div>
+          </div>
+          <p>Soluciones de alimentación para centros educativos, instituciones, empresas y eventos en Costa Rica.</p>
         </div>
+        <nav className="footer-navigation" aria-label="Navegación del pie de página">
+          <strong>Navegación</strong>
+          <a href="#servicios">Servicios</a>
+          <a href="#experiencia">Cómo trabajamos</a>
+          <a href="#cobertura">Cobertura</a>
+          <button type="button" onClick={openProposal}>Solicitar propuesta</button>
+        </nav>
         <div className="footer-contact">
+          <strong>Contacto</strong>
           <a href={`tel:${phone}`} aria-label="Llamar a NODIVA al +506 8373 8588"><Phone size={16} /> +506 8373 8588</a>
           <a href={emailLink("Consulta desde el sitio web — NODIVA", "Hola Norman,\n\nDeseo realizar la siguiente consulta:\n\n")}><Mail size={16} /> {email}</a>
+          <span>Atención 24/7</span>
         </div>
-        <div className="footer-meta"><span>Atención 24/7</span><span>Cotizaciones: Norman Díaz</span></div>
+        <div className="footer-coverage"><strong>Cobertura</strong><span>Costa Rica</span><span>Principalmente en el Valle Central.</span></div>
+        <div className="footer-bottom"><span>© {new Date().getFullYear()} NODIVA PRODUCTS S.A. Todos los derechos reservados.</span></div>
       </footer>
 
       <button className="floating-whatsapp" type="button" onClick={openProposal} aria-label="Contactar a NODIVA por WhatsApp">
