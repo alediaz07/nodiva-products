@@ -6,7 +6,6 @@ import {
   ArrowRight,
   Building2,
   CalendarDays,
-  Check,
   ChefHat,
   Mail,
   Menu,
@@ -264,24 +263,31 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="feature feature-cafeteria">
+      <section className="feature feature-cafeteria education-experience">
         <div className="feature-media">
           <Image unoptimized src="/images/comedor-estudiantil.png" alt="Servicio profesional de comedor estudiantil" fill sizes="(max-width: 900px) 100vw, 60vw" />
         </div>
-        <div className="feature-content">
-          <p className="section-kicker">Diversos centros educativos</p>
-          <h2>La tranquilidad de una gestión integral.</h2>
-          <p>
-            Nos adaptamos a los requerimientos de escuelas y colegios, coordinando
-            cada etapa hasta completar el servicio.
-          </p>
-          <ul>
-            <li><Check size={17} /> Operación ajustada a cada institución</li>
-            <li><Check size={17} /> Elaboración y distribución</li>
-            <li><Check size={17} /> Participación en licitaciones con el MEP</li>
-          </ul>
-          <a className="text-link" href={whatsappLink("Hola NODIVA, deseo conversar sobre un servicio para un centro educativo.")} target="_blank" rel="noreferrer">
-            Conversar sobre una institución <ArrowRight size={18} />
+        <div className="feature-content education-content">
+          <p className="section-kicker">EXPERIENCIA EN CENTROS EDUCATIVOS</p>
+          <h2>Alimentación adaptada a cada comunidad educativa.</h2>
+          <p className="education-intro">Trabajamos con diversos centros educativos, coordinando el servicio de acuerdo con sus horarios, población, instalaciones y requerimientos particulares.</p>
+          <div className="education-points">
+            <article>
+              <h3>EL REQUERIMIENTO</h3>
+              <p>Cada escuela o colegio presenta condiciones diferentes de capacidad, horarios, menús y dinámica de atención.</p>
+            </article>
+            <article>
+              <h3>LA RESPUESTA NODIVA</h3>
+              <p>Adaptamos el personal, la preparación, la distribución y el servicio para desarrollar una operación organizada hasta el plato servido.</p>
+            </article>
+          </div>
+          <div className="education-facts">
+            <article><strong>ESCUELAS Y COLEGIOS</strong><span>Servicios adaptados a cada centro.</span></article>
+            <article><strong>GESTIÓN COMPLETA</strong><span>Desde la coordinación hasta el plato servido.</span></article>
+            <article><strong>LICITACIONES DEL MEP</strong><span>Participación en procesos de contratación institucional.</span></article>
+          </div>
+          <a className="button button-dark education-button" href={whatsappLink("Hola NODIVA, deseo conversar sobre un servicio para un centro educativo.")} target="_blank" rel="noreferrer">
+            Consultar servicio para mi institución <ArrowRight size={18} />
           </a>
         </div>
       </section>
