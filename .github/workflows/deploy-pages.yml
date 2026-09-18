@@ -44,7 +44,12 @@ jobs:
 
       - name: Verify Pages output
         working-directory: ./nodiva-products
-        run: test -f out/index.html
+        run: |
+          test -f out/index.html
+          test -f out/CNAME
+          ! grep -q '/nodiva-products/' out/index.html
+          grep -q 'src="/_next/' out/index.html
+          grep -q 'href="/_next/' out/index.html
 
       - name: Create nojekyll marker
         working-directory: ./nodiva-products
