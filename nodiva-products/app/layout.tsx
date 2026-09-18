@@ -27,14 +27,21 @@ export const metadata: Metadata = {
     title: "NODIVA PRODUCTS | Soluciones de alimentación en Costa Rica",
     description:
       "Comedores, sodas institucionales, catering y soluciones integrales de alimentación para empresas, instituciones y centros educativos.",
-    // Add a branded 1200 x 630 image before configuring openGraph.images.
+    images: [
+      {
+        url: "/images/og-nodiva.jpg",
+        width: 1200,
+        height: 630,
+        alt: "NODIVA PRODUCTS S.A. - Soluciones integrales de alimentación",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "NODIVA PRODUCTS | Soluciones de alimentación en Costa Rica",
     description:
       "Comedores, sodas institucionales, catering y soluciones integrales de alimentación en Costa Rica.",
-    // Reuse the Open Graph image here once a suitable branded image exists.
+    images: ["/images/og-nodiva.jpg"],
   },
 };
 
